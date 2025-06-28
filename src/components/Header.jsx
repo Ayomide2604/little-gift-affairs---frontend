@@ -1,10 +1,34 @@
+import { useState, useRef, useEffect } from "react";
+import CartModal from "./CartModal";
 import Search from "./Search";
 import Topbar from "./Topbar";
 
 const Header = () => {
+	const [themeDropdownOpen, setThemeDropdownOpen] = useState(false);
+	const themeDropdownRef = useRef(null);
+
+	// Close dropdown on outside click
+	useEffect(() => {
+		const handleClick = (e) => {
+			if (
+				themeDropdownRef.current &&
+				!themeDropdownRef.current.contains(e.target)
+			) {
+				setThemeDropdownOpen(false);
+			}
+		};
+		if (themeDropdownOpen) {
+			document.addEventListener("mousedown", handleClick);
+		} else {
+			document.removeEventListener("mousedown", handleClick);
+		}
+		return () => document.removeEventListener("mousedown", handleClick);
+	}, [themeDropdownOpen]);
+
 	return (
 		<>
 			<Search />
+			<CartModal />
 			<Topbar />
 			<header
 				className="navbar navbar-expand-lg navbar-sticky bg-body d-block z-fixed p-0"
@@ -43,68 +67,68 @@ const Header = () => {
 						>
 							<span className="navbar-toggler-icon" />
 						</button>
-						{/* Light or Dark Theme */}
-						<div className="dropdown">
+						{/* React Light or Dark Theme Dropdown */}
+						<div className="dropdown position-static" ref={themeDropdownRef}>
 							<button
-								aria-expanded="false"
-								aria-label="Toggle theme (light)"
-								className="theme-switcher btn btn-icon btn-lg btn-outline-secondary fs-lg border-0 rounded-circle animate-scale"
-								data-bs-toggle="dropdown"
 								type="button"
+								className="theme-switcher btn btn-icon btn-lg btn-outline-secondary fs-lg border-0 rounded-circle animate-scale"
+								aria-label="Toggle theme (light)"
+								aria-expanded={themeDropdownOpen}
+								onClick={() => setThemeDropdownOpen((open) => !open)}
 							>
 								<span className="theme-icon-active d-flex animate-target">
-									<i className="ci-sun" />
+									<i className="ci-sun"></i>
 								</span>
 							</button>
-							<ul
-								className="dropdown-menu"
-								style={{
-									"--cz-dropdown-min-width": "9rem",
-								}}
-							>
-								<li>
-									<button
-										aria-pressed="true"
-										className="dropdown-item active"
-										data-bs-theme-value="light"
-										type="button"
-									>
-										<span className="theme-icon d-flex fs-base me-2">
-											<i className="ci-sun" />
-										</span>
-										<span className="theme-label">Light</span>
-										<i className="item-active-indicator ci-check ms-auto" />
-									</button>
-								</li>
-								<li>
-									<button
-										aria-pressed="false"
-										className="dropdown-item"
-										data-bs-theme-value="dark"
-										type="button"
-									>
-										<span className="theme-icon d-flex fs-base me-2">
-											<i className="ci-moon" />
-										</span>
-										<span className="theme-label">Dark</span>
-										<i className="item-active-indicator ci-check ms-auto" />
-									</button>
-								</li>
-								<li>
-									<button
-										aria-pressed="false"
-										className="dropdown-item"
-										data-bs-theme-value="auto"
-										type="button"
-									>
-										<span className="theme-icon d-flex fs-base me-2">
-											<i className="ci-auto" />
-										</span>
-										<span className="theme-label">Auto</span>
-										<i className="item-active-indicator ci-check ms-auto" />
-									</button>
-								</li>
-							</ul>
+							{themeDropdownOpen && (
+								<ul
+									className="dropdown-menu show"
+									style={{ "--cz-dropdown-min-width": "9rem" }}
+								>
+									<li>
+										<button
+											type="button"
+											className="dropdown-item active"
+											data-bs-theme-value="light"
+											aria-pressed="true"
+										>
+											<span className="theme-icon-active d-flex fs-base me-2">
+												<i className="ci-sun"></i>
+											</span>
+											<span className="theme-label">Light</span>
+											<i className="item-active-indicator ci-check ms-auto"></i>
+										</button>
+									</li>
+									<li>
+										<button
+											type="button"
+											className="dropdown-item"
+											data-bs-theme-value="dark"
+											aria-pressed="false"
+										>
+											<span className="theme-icon d-flex fs-base me-2">
+												<i className="ci-moon"></i>
+											</span>
+											<span className="theme-label">Dark</span>
+											<i className="item-active-indicator ci-check ms-auto"></i>
+										</button>
+									</li>
+									<li>
+										<button
+											type="button"
+											className="dropdown-item"
+											data-bs-theme-value="auto"
+											aria-pressed="false"
+										>
+											<span className="theme-icon d-flex fs-base me-2">
+												<i className="ci-auto"></i>
+											</span>
+											<span className="theme-label">Auto</span>
+											<i className="item-active-indicator ci-check ms-auto"></i>
+										</button>
+									</li>
+								</ul>
+							)}
 						</div>
 						{/* end light or dark theme */}
 						<button
@@ -119,7 +143,7 @@ const Header = () => {
 						</button>
 						<a
 							className="btn btn-icon btn-lg fs-lg btn-outline-secondary border-0 rounded-circle animate-shake d-none d-md-inline-flex"
-							href="account-signin.html"
+							href="/login"
 						>
 							<i className="ci-user animate-target" />
 							<span className="visually-hidden">Account</span>

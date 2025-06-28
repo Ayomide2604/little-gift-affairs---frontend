@@ -10,10 +10,12 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 import "./assets/css/theme.min.css";
 import "./assets/css/cartzilla-icons.min.css";
 import "simplebar-react/dist/simplebar.min.css";
+import { Toaster } from "sonner";
 createRoot(document.getElementById("root")).render(
 	<StrictMode>
 		<BrowserRouter>
 			<App />
+			<Toaster position="top-right" duration={2000} richColors />
 		</BrowserRouter>
 	</StrictMode>
 );
