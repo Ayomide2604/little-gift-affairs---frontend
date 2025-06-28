@@ -73,7 +73,7 @@ const useAuthStore = create((set) => ({
 			set((state) => ({ ...state, user: null }));
 			localStorage.removeItem("pocketbase_auth");
 			localStorage.removeItem("pocketbase_cart");
-			navigate("/login");
+			if (navigate) navigate("/login");
 		} catch (error) {
 			toast.error("logout failed");
 			console.error(error);

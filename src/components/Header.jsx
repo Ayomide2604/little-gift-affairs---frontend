@@ -2,6 +2,11 @@ import { useState, useRef, useEffect } from "react";
 import CartModal from "./CartModal";
 import Search from "./Search";
 import Topbar from "./Topbar";
+import useAuthStore from "../stores/useAuthStore";
+import logo from "../assets/img/logo.png";
+import defaultPic from "../assets/img/default.png";
+import { CiUser, CiLogout, CiShoppingCart } from "react-icons/ci";
+import getImageUrl from "../utils/getImageUrl";
 
 const themeIcons = {
 	light: <i className="ci-sun" />,
@@ -9,12 +14,21 @@ const themeIcons = {
 	auto: <i className="ci-auto" />,
 };
 
+const profileDropdownIcons = {
+	account: <CiUser size={20} />, // Account settings
+	orders: <CiShoppingCart size={20} />, // Orders
+	logout: <CiLogout size={20} />, // Logout
+};
+
 const Header = () => {
+	const { user, logout } = useAuthStore();
 	const [themeDropdownOpen, setThemeDropdownOpen] = useState(false);
 	const [theme, setTheme] = useState("light"); // Track selected theme
 	const themeDropdownRef = useRef(null);
+	const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
+	const profileDropdownRef = useRef(null);
 
-	// Close dropdown on outside click
+	// Close dropdowns on outside click
 	useEffect(() => {
 		const handleClick = (e) => {
 			if (
@@ -23,14 +37,20 @@ const Header = () => {
 			) {
 				setThemeDropdownOpen(false);
 			}
+			if (
+				profileDropdownRef.current &&
+				!profileDropdownRef.current.contains(e.target)
+			) {
+				setProfileDropdownOpen(false);
+			}
 		};
-		if (themeDropdownOpen) {
+		if (themeDropdownOpen || profileDropdownOpen) {
 			document.addEventListener("mousedown", handleClick);
 		} else {
 			document.removeEventListener("mousedown", handleClick);
 		}
 		return () => document.removeEventListener("mousedown", handleClick);
-	}, [themeDropdownOpen]);
+	}, [themeDropdownOpen, profileDropdownOpen]);
 
 	// Optionally, persist theme to localStorage or apply to document.body
 	useEffect(() => {
@@ -61,10 +81,7 @@ const Header = () => {
 						</button>
 					</div>
 					{/* end Navbar toggle */}
-					<a
-						className="navbar-brand fs-2 py-0 m-0 me-auto me-sm-n5"
-						href="index.html"
-					>
+					<a className="navbar-brand fs-2 py-0 m-0 me-auto me-sm-n5" href="/">
 						Gift Shop
 					</a>
 					<div className="d-flex align-items-center">
@@ -174,13 +191,7 @@ const Header = () => {
 						>
 							<i className="ci-search animate-target" />
 						</button>
-						<a
-							className="btn btn-icon btn-lg fs-lg btn-outline-secondary border-0 rounded-circle animate-shake d-none d-md-inline-flex"
-							href="/login"
-						>
-							<i className="ci-user animate-target" />
-							<span className="visually-hidden">Account</span>
-						</a>
+
 						<a
 							className="btn btn-icon btn-lg fs-lg btn-outline-secondary border-0 rounded-circle animate-pulse d-none d-md-inline-flex"
 							href="#!"
@@ -207,6 +218,87 @@ const Header = () => {
 							</span>
 							<i className="ci-shopping-bag animate-target me-1" />
 						</button>
+						{user ? (
+							<div
+								className="dropdown position-static ms-2"
+								ref={profileDropdownRef}
+							>
+								<button
+									type="button"
+									className="btn btn-icon btn-lg fs-lg btn-outline-secondary border-0 rounded-circle animate-shake d-none d-md-inline-flex"
+									aria-label="Profile menu"
+									aria-expanded={profileDropdownOpen}
+									onClick={() => setProfileDropdownOpen((open) => !open)}
+								>
+									<img
+										src={
+											getImageUrl(user?.record, user?.record?.avatar) ||
+											defaultPic
+										}
+										alt="Profile"
+										className="img-fluid rounded-circle"
+										style={{
+											height: "2.2rem",
+											width: "2.2rem",
+											objectFit: "cover",
+										}}
+									/>
+									<span className="visually-hidden">Profile</span>
+								</button>
+								{profileDropdownOpen && (
+									<ul
+										className="dropdown-menu dropdown-menu-end show "
+										style={{ minWidth: "12rem", right: "20px" }}
+									>
+										<li>
+											<a
+												className="dropdown-item d-flex align-items-center"
+												href="/account"
+											>
+												<span className="me-2">
+													{profileDropdownIcons.account}
+												</span>
+												Account Settings
+											</a>
+										</li>
+										<li>
+											<a
+												className="dropdown-item d-flex align-items-center"
+												href="/orders"
+											>
+												<span className="me-2">
+													{profileDropdownIcons.orders}
+												</span>
+												Orders
+											</a>
+										</li>
+										<li>
+											<button
+												className="dropdown-item d-flex align-items-center"
+												type="button"
+												onClick={() => {
+													setProfileDropdownOpen(false);
+													logout();
+												}}
+											>
+												<span className="me-2">
+													{profileDropdownIcons.logout}
+												</span>
+												Logout
+											</button>
+										</li>
+									</ul>
+								)}
+							</div>
+						) : (
+							<a
+								className="btn btn-icon btn-lg fs-lg btn-outline-secondary border-0 rounded-circle animate-shake d-none d-md-inline-flex"
+								href="/login"
+							>
+								<i className="ci-user animate-target" />
+								<span className="visually-hidden">Account</span>
+							</a>
+						)}
 					</div>
 				</div>
 				<div className="collapse navbar-stuck-hide" id="stuckNav">
@@ -232,10 +324,10 @@ const Header = () => {
 							<div
 								className="ratio ratio-1x1"
 								style={{
-									width: "20px",
+									width: "50%",
 								}}
 							>
-								<img alt="logo" src={null} />
+								<img alt="logo" src={logo} />
 							</div>
 						</div>
 						{/* end Logo for mobile Nav */}
@@ -251,58 +343,31 @@ const Header = () => {
 												className="nav-link active"
 												data-bs-toggle="dropdown"
 												data-bs-trigger="hover"
-												href="#"
+												href="/"
 												role="button"
 											>
 												Home
 											</a>
 										</li>
-										<li className="nav-item dropdown position-static pb-lg-2 me-lg-n1 me-xl-0">
-											<a
-												aria-expanded="false"
-												className="nav-link"
-												data-bs-toggle="dropdown"
-												data-bs-trigger="hover"
-												href="#"
-												role="button"
-											>
-												Shop
-											</a>
-										</li>
-										<li className="nav-item dropdown pb-lg-2 me-lg-n1 me-xl-0">
-											<a
-												aria-expanded="false"
-												className="nav-link"
-												data-bs-auto-close="outside"
-												data-bs-toggle="dropdown"
-												data-bs-trigger="hover"
-												href="#"
-												role="button"
-											>
-												Account
-											</a>
-										</li>
-										<li className="nav-item dropdown pb-lg-2 me-lg-n1 me-xl-0">
-											<a
-												aria-expanded="false"
-												className="nav-link"
-												data-bs-auto-close="outside"
-												data-bs-toggle="dropdown"
-												data-bs-trigger="hover"
-												href="#"
-												role="button"
-											>
-												Pages
+
+										<li className="nav-item pb-lg-2 me-lg-n2 me-xl-0">
+											<a className="nav-link" href="/about">
+												About
 											</a>
 										</li>
 										<li className="nav-item pb-lg-2 me-lg-n2 me-xl-0">
-											<a className="nav-link" href="docs/installation.html">
-												Docs
+											<a className="nav-link" href="/packages">
+												Packages
 											</a>
 										</li>
 										<li className="nav-item pb-lg-2 me-lg-n2 me-xl-0">
-											<a className="nav-link" href="docs/typography.html">
-												Components
+											<a className="nav-link" href="/products">
+												Products
+											</a>
+										</li>
+										<li className="nav-item pb-lg-2 me-lg-n2 me-xl-0">
+											<a className="nav-link" href="/contact">
+												Contact
 											</a>
 										</li>
 									</ul>
@@ -324,10 +389,34 @@ const Header = () => {
 						</div>
 						<div className="offcanvas-header border-top px-0 py-3 mt-3 d-md-none">
 							<div className="nav nav-justified w-100">
-								<a className="nav-link border-end" href="account-signin.html">
-									<i className="ci-user fs-lg opacity-60 me-2" />
-									Account
-								</a>
+								{user ? (
+									<>
+										<a className="nav-link border-end" href="#">
+											<img
+												src={
+													getImageUrl(user?.record, user?.record?.avatar) ||
+													defaultPic
+												}
+												alt="avatar"
+												className="img-fluid rounded-circle"
+												style={{
+													width: "40px",
+													height: "40px",
+													objectFit: "cover",
+													borderRadius: "50%",
+												}}
+											/>
+											<span className="ms-2">Profile</span>
+										</a>
+									</>
+								) : (
+									<>
+										<a className="nav-link border-end" href="/login">
+											<i className="ci-user fs-lg opacity-60 me-2" />
+											Account
+										</a>
+									</>
+								)}
 								<a className="nav-link" href="#!">
 									<i className="ci-heart  fs-lg opacity-60 me-2" />
 									Wishlist
