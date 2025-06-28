@@ -3,8 +3,15 @@ import CartModal from "./CartModal";
 import Search from "./Search";
 import Topbar from "./Topbar";
 
+const themeIcons = {
+	light: <i className="ci-sun" />,
+	dark: <i className="ci-moon" />,
+	auto: <i className="ci-auto" />,
+};
+
 const Header = () => {
 	const [themeDropdownOpen, setThemeDropdownOpen] = useState(false);
+	const [theme, setTheme] = useState("light"); // Track selected theme
 	const themeDropdownRef = useRef(null);
 
 	// Close dropdown on outside click
@@ -24,6 +31,11 @@ const Header = () => {
 		}
 		return () => document.removeEventListener("mousedown", handleClick);
 	}, [themeDropdownOpen]);
+
+	// Optionally, persist theme to localStorage or apply to document.body
+	useEffect(() => {
+		document.body.setAttribute("data-bs-theme", theme);
+	}, [theme]);
 
 	return (
 		<>
@@ -72,12 +84,12 @@ const Header = () => {
 							<button
 								type="button"
 								className="theme-switcher btn btn-icon btn-lg btn-outline-secondary fs-lg border-0 rounded-circle animate-scale"
-								aria-label="Toggle theme (light)"
+								aria-label={`Toggle theme (${theme})`}
 								aria-expanded={themeDropdownOpen}
 								onClick={() => setThemeDropdownOpen((open) => !open)}
 							>
 								<span className="theme-icon-active d-flex animate-target">
-									<i className="ci-sun"></i>
+									{themeIcons[theme]}
 								</span>
 							</button>
 							{themeDropdownOpen && (
@@ -88,43 +100,64 @@ const Header = () => {
 									<li>
 										<button
 											type="button"
-											className="dropdown-item active"
-											data-bs-theme-value="light"
-											aria-pressed="true"
+											className={`dropdown-item${
+												theme === "light" ? " active" : ""
+											}`}
+											aria-pressed={theme === "light"}
+											onClick={() => {
+												setTheme("light");
+												setThemeDropdownOpen(false);
+											}}
 										>
 											<span className="theme-icon-active d-flex fs-base me-2">
-												<i className="ci-sun"></i>
+												<i className="ci-sun" />
 											</span>
 											<span className="theme-label">Light</span>
-											<i className="item-active-indicator ci-check ms-auto"></i>
+											{theme === "light" && (
+												<i className="item-active-indicator ci-check ms-auto" />
+											)}
 										</button>
 									</li>
 									<li>
 										<button
 											type="button"
-											className="dropdown-item"
-											data-bs-theme-value="dark"
-											aria-pressed="false"
+											className={`dropdown-item${
+												theme === "dark" ? " active" : ""
+											}`}
+											aria-pressed={theme === "dark"}
+											onClick={() => {
+												setTheme("dark");
+												setThemeDropdownOpen(false);
+											}}
 										>
 											<span className="theme-icon d-flex fs-base me-2">
-												<i className="ci-moon"></i>
+												<i className="ci-moon" />
 											</span>
 											<span className="theme-label">Dark</span>
-											<i className="item-active-indicator ci-check ms-auto"></i>
+											{theme === "dark" && (
+												<i className="item-active-indicator ci-check ms-auto" />
+											)}
 										</button>
 									</li>
 									<li>
 										<button
 											type="button"
-											className="dropdown-item"
-											data-bs-theme-value="auto"
-											aria-pressed="false"
+											className={`dropdown-item${
+												theme === "auto" ? " active" : ""
+											}`}
+											aria-pressed={theme === "auto"}
+											onClick={() => {
+												setTheme("auto");
+												setThemeDropdownOpen(false);
+											}}
 										>
 											<span className="theme-icon d-flex fs-base me-2">
-												<i className="ci-auto"></i>
+												<i className="ci-auto" />
 											</span>
 											<span className="theme-label">Auto</span>
-											<i className="item-active-indicator ci-check ms-auto"></i>
+											{theme === "auto" && (
+												<i className="item-active-indicator ci-check ms-auto" />
+											)}
 										</button>
 									</li>
 								</ul>
