@@ -81,9 +81,17 @@ const Header = () => {
 						</button>
 					</div>
 					{/* end Navbar toggle */}
-					<a className="navbar-brand fs-2 py-0 m-0 me-auto me-sm-n5" href="/">
+					{/* <a className="navbar-brand fs-2 py-0 m-0 me-auto me-sm-n5" href="/">
 						Gift Shop
-					</a>
+					</a> */}
+					<div
+						className="ratio ratio-1x1 d-none d-md-block "
+						style={{
+							width: "5%",
+						}}
+					>
+						<img alt="logo" src={logo} />
+					</div>
 					<div className="d-flex align-items-center">
 						<button
 							aria-controls="stuckNav"
@@ -312,6 +320,7 @@ const Header = () => {
 							<h5 className="offcanvas-title" id="navbarNavLabel">
 								Gift Shop
 							</h5>
+
 							<button
 								aria-label="Close"
 								className="btn-close"
@@ -356,15 +365,11 @@ const Header = () => {
 											</a>
 										</li>
 										<li className="nav-item pb-lg-2 me-lg-n2 me-xl-0">
-											<a className="nav-link" href="/packages">
-												Packages
+											<a className="nav-link" href="/shop">
+												Shop
 											</a>
 										</li>
-										<li className="nav-item pb-lg-2 me-lg-n2 me-xl-0">
-											<a className="nav-link" href="/products">
-												Products
-											</a>
-										</li>
+
 										<li className="nav-item pb-lg-2 me-lg-n2 me-xl-0">
 											<a className="nav-link" href="/contact">
 												Contact

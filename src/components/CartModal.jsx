@@ -22,11 +22,7 @@ const CartModal = () => {
 						aria-label="Close"
 					></button>
 				</div>
-				<p className="fs-sm">
-					Buy <span className="text-dark-emphasis fw-semibold">$53</span> more
-					to get{" "}
-					<span className="text-dark-emphasis fw-semibold">Free Shipping</span>
-				</p>
+
 				<div
 					className="progress w-100"
 					role="progressbar"
