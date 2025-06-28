@@ -1,9 +1,9 @@
-import React from "react";
+import Hero from "../pages/Hero";
 
 const HomeScreen = () => {
 	return (
 		<div>
-			<h1>HomeScreen</h1>
+			<Hero />
 		</div>
 	);
 };

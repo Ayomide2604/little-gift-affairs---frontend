@@ -8,11 +8,11 @@ function App() {
 	return (
 		<>
 			<Header />
-			<div className="app">
+			<main class="content-wrapper">
 				<Routes>
 					<Route index element={<HomeScreen />} />
 				</Routes>
-			</div>
+			</main>
 			<Footer />
 		</>
 	);
