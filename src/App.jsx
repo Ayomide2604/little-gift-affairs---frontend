@@ -1,12 +1,19 @@
 import "./App.css";
-import Navbar from "./components/Navbar";
-import Topbar from "./components/Topbar";
+import { Routes, Route } from "react-router-dom";
+import Footer from "./components/Footer";
+import Header from "./components/Header";
+import HomeScreen from "./screens/HomeScreen";
 
 function App() {
 	return (
 		<>
-			<Topbar />
-			<Navbar />
+			<Header />
+			<div className="app">
+				<Routes>
+					<Route index element={<HomeScreen />} />
+				</Routes>
+			</div>
+			<Footer />
 		</>
 	);
 }
