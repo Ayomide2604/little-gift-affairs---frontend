@@ -56,7 +56,7 @@ const useCartStore = create((set, get) => ({
 	},
 
 	// Add item to cart
-	addToCart: async (productId, quantity = 1, size) => {
+	addToCart: async (productId, quantity = 1) => {
 		const user = useAuthStore.getState().user;
 
 		try {
@@ -64,16 +64,12 @@ const useCartStore = create((set, get) => ({
 				get().getCart();
 				const cart = useCartStore.getState().cart;
 
-				// Get all cart items for the current cart
-				const items = await pb.collection("Cart_Item").getFullList({
-					filter: `cart="${cart.id}"`,
-				});
-				// console.log("items:", items);
+				// console.log(cart);
 
-				// Check if an item with the same product and size already exists
-				const existingItem = items.find(
-					(item) => item.product === productId && item.size === size
-				);
+				// Check if an item with the same product  already exists
+				const items = get().items;
+				const existingItem = items.find((item) => item.product === productId);
+				// console.log(existingItem);
 
 				if (existingItem) {
 					// If it exists, increment the quantity
@@ -89,8 +85,7 @@ const useCartStore = create((set, get) => ({
 					// Otherwise, create a new cart item
 					const response = await pb.collection("Cart_Item").create({
 						product: productId,
-						quantity,
-						size,
+						quantity: quantity,
 						cart: cart.id,
 					});
 					useCartStore.getState().getCart();

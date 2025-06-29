@@ -1,11 +1,26 @@
-import React from "react";
+import React, { useEffect } from "react";
+import useCartStore from "../stores/useCartStore";
+import CartItem from "./CartItem";
+import formatter from "../utils/currencyFormatter";
+import EmptyCart from "./EmptyCart";
 
 const CartModal = () => {
+	const { getCart, items, removeFromCart, updateCart } = useCartStore();
+	// const shippingFee = 3000;
+	const subtotal = items.reduce(
+		(sum, item) => sum + item?.expand?.product?.price * item.quantity,
+		0
+	);
+	// const total = subtotal + shippingFee;
+
+	useEffect(() => {
+		getCart();
+	}, []);
 	return (
 		<div
 			className="offcanvas offcanvas-end pb-sm-2 px-sm-2"
 			id="shoppingCart"
-			tabindex="-1"
+			tabIndex="-1"
 			aria-labelledby="shoppingCartLabel"
 			style={{ width: "500px" }}
 		>
@@ -46,185 +61,26 @@ const CartModal = () => {
 			{/* <!-- Items --> */}
 			<div className="offcanvas-body d-flex flex-column gap-4 pt-2">
 				{/* <!-- Item --> */}
-				<div className="d-flex align-items-center">
-					<a className="flex-shrink-0" href="shop-product-fashion.html">
-						<img
-							src="assets/img/shop/fashion/thumbs/07.png"
-							className="bg-body-tertiary rounded"
-							width="110"
-							alt="Thumbnail"
-						/>
-					</a>
-					<div className="w-100 min-w-0 ps-3">
-						<h5 className="d-flex animate-underline mb-2">
-							<a
-								className="d-block fs-sm fw-medium text-truncate animate-target"
-								href="shop-product-fashion.html"
-							>
-								Leather sneakers with golden laces
-							</a>
-						</h5>
-						<div className="h6 pb-1 mb-2">$74.00</div>
-						<div className="d-flex align-items-center justify-content-between">
-							<div className="count-input rounded-2">
-								<button
-									type="button"
-									className="btn btn-icon btn-sm"
-									data-decrement=""
-									aria-label="Decrement quantity"
-								>
-									<i className="ci-minus"></i>
-								</button>
-								<input
-									type="number"
-									className="form-control form-control-sm"
-									value="1"
-									readonly=""
-								/>
-								<button
-									type="button"
-									className="btn btn-icon btn-sm"
-									data-increment=""
-									aria-label="Increment quantity"
-								>
-									<i className="ci-plus"></i>
-								</button>
-							</div>
-							<button
-								type="button"
-								className="btn-close fs-sm"
-								data-bs-toggle="tooltip"
-								data-bs-custom-className="tooltip-sm"
-								data-bs-title="Remove"
-								aria-label="Remove from cart"
-							></button>
+				{items && items?.length > 0 ? (
+					items?.map((item) => (
+						<div key={item?.id} className="d-flex align-items-center">
+							<CartItem
+								item={item}
+								removeItem={removeFromCart}
+								updateQuantity={updateCart}
+							/>
 						</div>
-					</div>
-				</div>
-
-				{/* <!-- Item --> */}
-				<div className="d-flex align-items-center">
-					<a className="flex-shrink-0" href="shop-product-fashion.html">
-						<img
-							src="assets/img/shop/fashion/thumbs/08.png"
-							className="bg-body-tertiary rounded"
-							width="110"
-							alt="Thumbnail"
-						/>
-					</a>
-					<div className="w-100 min-w-0 ps-3">
-						<h5 className="d-flex animate-underline mb-2">
-							<a
-								className="d-block fs-sm fw-medium text-truncate animate-target"
-								href="shop-product-fashion.html"
-							>
-								ClassNaclassNameic cotton men's shirt
-							</a>
-						</h5>
-						<div className="h6 pb-1 mb-2">$27.00</div>
-						<div className="d-flex align-items-center justify-content-between">
-							<div className="count-input rounded-2">
-								<button
-									type="button"
-									className="btn btn-icon btn-sm"
-									data-decrement=""
-									aria-label="Decrement quantity"
-								>
-									<i className="ci-minus"></i>
-								</button>
-								<input
-									type="number"
-									className="form-control form-control-sm"
-									value="1"
-									readonly=""
-								/>
-								<button
-									type="button"
-									className="btn btn-icon btn-sm"
-									data-increment=""
-									aria-label="Increment quantity"
-								>
-									<i className="ci-plus"></i>
-								</button>
-							</div>
-							<button
-								type="button"
-								className="btn-close fs-sm"
-								data-bs-toggle="tooltip"
-								data-bs-custom-className="tooltip-sm"
-								data-bs-title="Remove"
-								aria-label="Remove from cart"
-							></button>
-						</div>
-					</div>
-				</div>
-
-				{/* <!-- Item --> */}
-				<div className="d-flex align-items-center">
-					<a className="flex-shrink-0" href="shop-product-fashion.html">
-						<img
-							src="assets/img/shop/fashion/thumbs/09.png"
-							className="bg-body-tertiary rounded"
-							width="110"
-							alt="Thumbnail"
-						/>
-					</a>
-					<div className="w-100 min-w-0 ps-3">
-						<h5 className="d-flex animate-underline mb-2">
-							<a
-								className="d-block fs-sm fw-medium text-truncate animate-target"
-								href="shop-product-fashion.html"
-							>
-								Polarized sunglasses for men
-							</a>
-						</h5>
-						<div className="h6 pb-1 mb-2">
-							$96.00{" "}
-							<del className="text-body-tertiary fs-xs fw-normal">112.00</del>
-						</div>
-						<div className="d-flex align-items-center justify-content-between">
-							<div className="count-input rounded-2">
-								<button
-									type="button"
-									className="btn btn-icon btn-sm"
-									data-decrement=""
-									aria-label="Decrement quantity"
-								>
-									<i className="ci-minus"></i>
-								</button>
-								<input
-									type="number"
-									className="form-control form-control-sm"
-									value="1"
-									readonly=""
-								/>
-								<button
-									type="button"
-									className="btn btn-icon btn-sm"
-									data-increment=""
-									aria-label="Increment quantity"
-								>
-									<i className="ci-plus"></i>
-								</button>
-							</div>
-							<button
-								type="button"
-								className="btn-close fs-sm"
-								data-bs-toggle="tooltip"
-								data-bs-custom-className="tooltip-sm"
-								data-bs-title="Remove"
-								aria-label="Remove from cart"
-							></button>
-						</div>
-					</div>
-				</div>
+					))
+				) : (
+					<EmptyCart />
+				)}
 			</div>
 
 			{/* <!-- Footer --> */}
 			<div className="offcanvas-header flex-column align-items-start">
 				<div className="d-flex align-items-center justify-content-between w-100 mb-3 mb-md-4">
 					<span className="text-light-emphasis">Subtotal:</span>
-					<span className="h6 mb-0">$197.00</span>
+					<span className="h6 mb-0">{formatter.format(subtotal)}</span>
 				</div>
 				<div className="d-flex w-100 gap-3">
 					<a className="btn btn-lg btn-secondary w-100" href="#!">

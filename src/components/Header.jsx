@@ -7,6 +7,7 @@ import logo from "../assets/img/logo.png";
 import defaultPic from "../assets/img/default.png";
 import { CiUser, CiLogout, CiShoppingCart } from "react-icons/ci";
 import getImageUrl from "../utils/getImageUrl";
+import useCartStore from "../stores/useCartStore";
 
 const themeIcons = {
 	light: <i className="ci-sun" />,
@@ -27,6 +28,8 @@ const Header = () => {
 	const themeDropdownRef = useRef(null);
 	const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
 	const profileDropdownRef = useRef(null);
+
+	const { total } = useCartStore();
 
 	// Close dropdowns on outside click
 	useEffect(() => {
@@ -222,7 +225,7 @@ const Header = () => {
 									"--cz-badge-padding-y": ".25em",
 								}}
 							>
-								3
+								{total}
 							</span>
 							<i className="ci-shopping-bag animate-target me-1" />
 						</button>
@@ -345,20 +348,11 @@ const Header = () => {
 								<div className="position-relative d-lg-flex align-items-center justify-content-between">
 									<div className="navbar-nav"></div>
 									<ul className="navbar-nav position-relative me-xl-n5">
-										<li className="nav-item dropdown pb-lg-2 me-lg-n1 me-xl-0">
-											<a
-												aria-current="page"
-												aria-expanded="false"
-												className="nav-link active"
-												data-bs-toggle="dropdown"
-												data-bs-trigger="hover"
-												href="/"
-												role="button"
-											>
+										<li className="nav-item pb-lg-2 me-lg-n2 me-xl-0">
+											<a className="nav-link" href="/">
 												Home
 											</a>
 										</li>
-
 										<li className="nav-item pb-lg-2 me-lg-n2 me-xl-0">
 											<a className="nav-link" href="/about">
 												About

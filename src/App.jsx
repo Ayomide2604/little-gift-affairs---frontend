@@ -12,7 +12,7 @@ function App() {
 	return (
 		<>
 			<Header />
-			<main class="content-wrapper">
+			<main className="content-wrapper">
 				<Routes>
 					<Route index element={<HomeScreen />} />
 					<Route path="/shop" element={<ProductScreen />} />

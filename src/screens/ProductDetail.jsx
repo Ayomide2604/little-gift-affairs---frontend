@@ -1,41 +1,35 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import useProductStore from "../stores/useProductStore";
 import getImageUrl from "../utils/getImageUrl";
 import formatter from "../utils/currencyFormatter";
+import useCartStore from "./../stores/useCartStore";
 
 const ProductDetail = () => {
 	const { id } = useParams();
 	const { fetchProductById, product } = useProductStore();
+	const [quantity, setQuantity] = useState(1);
+	const { addToCart } = useCartStore();
 
 	useEffect(() => {
 		fetchProductById(id);
 	}, [id]);
+
+	const handleAddToCart = (productId, quantity) => {
+		addToCart(productId, quantity);
+		setQuantity(1);
+	};
 	return (
 		<div>
 			<section className="container">
 				<div className="row">
 					<div className="col-md-6 pb-4 pb-md-0 mb-2 mb-sm-3 mb-md-0">
 						<div className="position-relative">
-							<span className="badge text-bg-danger position-absolute top-0 start-0 z-2 mt-3 mt-sm-4 ms-3 ms-sm-4">
-								Sale
-							</span>
-							<button
-								aria-label="Add to Wishlist"
-								className="btn btn-icon btn-secondary animate-pulse fs-lg bg-transparent border-0 position-absolute top-0 end-0 z-2 mt-2 mt-sm-3 me-2 me-sm-3"
-								data-bs-custom-class="tooltip-sm"
-								data-bs-placement="top"
-								data-bs-title="Add to Wishlist"
-								data-bs-toggle="tooltip"
-								type="button"
-							>
-								<i className="bi bi-heart animate-target" />
-							</button>
 							<a
 								className="hover-effect-scale hover-effect-opacity position-relative d-flex rounded overflow-hidden mb-3 mb-sm-4 mb-md-3 mb-lg-4"
 								data-gallery="product-gallery"
 								data-glightbox=""
-								href={getImageUrl(product, product?.images)}
+								// href={getImageUrl(product, product?.images)}
 							>
 								<i className="bi-zoom hover-effect-target fs-3 text-white position-absolute top-50 start-50 translate-middle opacity-0 z-2" />
 								<div
@@ -72,19 +66,21 @@ const ProductDetail = () => {
 								</del> */}
 							</div>
 
-							<div className="d-flex gap-3 pb-3 pb-lg-4 mb-3">
-								<div className="count-input flex-shrink-0">
+							<div className=" pb-3 pb-lg-4 mb-3">
+								<div className="count-input flex-shrink-0 mb-3">
 									<button
 										aria-label="Decrement quantity"
 										className="btn btn-icon btn-lg"
 										data-decrement=""
 										type="button"
+										onClick={() => setQuantity(quantity - 1)}
+										disabled={quantity <= 1}
 									>
 										<i className="bi bi-dash" />
 									</button>
 									<input
 										className="form-control form-control-lg"
-										defaultValue="1"
+										value={quantity}
 										min="1"
 										readOnly
 										type="number"
@@ -94,22 +90,27 @@ const ProductDetail = () => {
 										className="btn btn-icon btn-lg"
 										data-increment=""
 										type="button"
+										onClick={() => setQuantity(quantity + 1)}
 									>
 										<i className=" bi bi-plus" />
 									</button>
 								</div>
-								<button className="btn btn-lg btn-dark w-100" type="button">
+								<button
+									className="btn btn-lg btn-dark w-100"
+									type="button"
+									onClick={() => handleAddToCart(product?.id, quantity)}
+								>
 									Add to cart
 								</button>
 							</div>
-							<ul className="list-unstyled gap-3 pb-3 pb-lg-4 mb-3">
+							{/* <ul className="list-unstyled gap-3 pb-3 pb-lg-4 mb-3">
 								<li className="d-flex flex-wrap fs-sm">
 									<span className="d-flex align-items-center fw-medium text-dark-emphasis me-2">
 										<i className="bi bi-check-circle fs-base me-2" />
 										Teddy Bear
 									</span>
 								</li>
-							</ul>
+							</ul> */}
 						</div>
 					</div>
 				</div>
